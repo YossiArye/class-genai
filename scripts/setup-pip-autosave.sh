@@ -1,15 +1,18 @@
 #!/usr/bin/env bash
-# Hooks pip-autosave into venv/bin/activate. Run once after creating the venv:
+# Installs pip-autosave into the venv. Run once after creating the venv:
 #   python3 -m venv venv && bash scripts/setup-pip-autosave.sh
+# Re-run it if you recreate the venv.
 set -e
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-ACTIVATE="$ROOT/venv/bin/activate"
-LINE='. "$(dirname "$VIRTUAL_ENV")/scripts/pip-autosave.sh"  # pip-autosave'
+PY="$ROOT/venv/bin/python"
 
-[ -f "$ACTIVATE" ] || { echo "No venv found. Run: python3 -m venv venv"; exit 1; }
-if grep -q '# pip-autosave' "$ACTIVATE"; then
-  echo "pip-autosave already installed."
-else
-  printf '\n%s\n' "$LINE" >> "$ACTIVATE"
-  echo "✅ pip-autosave installed. Run: source venv/bin/activate"
-fi
+[ -x "$PY" ] || { echo "No venv found. Run: python3 -m venv venv"; exit 1; }
+SP="$("$PY" -c 'import sysconfig; print(sysconfig.get_paths()["purelib"])')"
+
+cp "$ROOT/scripts/pip_autosave.py" "$SP/pip_autosave.py"
+echo "import pip_autosave" > "$SP/pip_autosave.pth"
+
+# Remove the old shell-function hook from activate, if present
+sed -i '' '/# pip-autosave$/d' "$ROOT/venv/bin/activate" 2>/dev/null || true
+
+echo "✅ pip-autosave installed in $SP"

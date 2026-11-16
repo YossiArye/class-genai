@@ -70,11 +70,7 @@ print(f"Result Vector: {result_vector}")
 best_match = None
 min_dist = float('inf')
 
-for word, vec in embeddings.items():
-    # Don't match the input words themselves to keep it fair
-    if word in ["King", "Man", "Woman"]:
-        continue
-        
+for word, vec in embeddings.items(): 
     dist = np.linalg.norm(vec - result_vector)
     if dist < min_dist:
         min_dist = dist
