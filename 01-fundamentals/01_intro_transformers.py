@@ -72,7 +72,23 @@ Note: The first run downloads several models into ~/.cache/huggingface/
       Later runs load them from cache and start fast.
 """
 
-from transformers import pipeline  # HuggingFace high-level task API
+from transformers import pipeline as _hf_pipeline  # HuggingFace high-level task API
+
+
+def pipeline(*args, **kwargs):
+    """Thin wrapper around transformers.pipeline() that works on every Mac.
+
+    On some Macs (Apple Silicon + older macOS) two things crash Python hard:
+      1. The automatic GPU backend (MPS): "MPSNDArray ... unrecognized selector".
+      2. Running on weights that are memory-mapped straight from the cached
+         file: "Bus error".
+    These models are small, so we (1) force the CPU and (2) copy the weights
+    into normal memory. Everything else behaves exactly like pipeline().
+    """
+    pipe = _hf_pipeline(*args, device="cpu", **kwargs)
+    for param in pipe.model.parameters():
+        param.data = param.data.clone()
+    return pipe
 
 
 # ── 1. Text Generation (GPT-2) ───────────────────────────────────────────────
