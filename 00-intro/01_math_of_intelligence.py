@@ -73,4 +73,5 @@ print(f"Final Score (Estimated Value): {score}")
 threshold = 200
 decision = "BUY" if score > threshold else "PASS"
 
-print(f"\nResult: Score {score} is < {threshold}, so Decision is: {decision}")
+comparison = ">" if score > threshold else "<="
+print(f"\nResult: Score {score} is {comparison} {threshold}, so Decision is: {decision}")

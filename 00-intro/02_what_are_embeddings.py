@@ -24,6 +24,8 @@ import numpy as np
 # Y-axis = "Gender"  (Up is Female, Down is Male)
 
 #                   [Royalty, Gender]
+
+#
 embeddings = {
     "King":  np.array([0.9,    -0.8]),
     "Queen": np.array([0.95,    0.9]),
