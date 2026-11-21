@@ -23,7 +23,7 @@ from transformers import AutoTokenizer
 # We must use the EXACT same tokenizer that the model was trained with.
 # If we used a BERT tokenizer for GPT-2, the numbers would mean completely different things.
 print("Loading tokenizer for 'gpt2'...")
-tokenizer = AutoTokenizer.from_pretrained('gpt2')
+tokenizer = AutoTokenizer.from_pretrained('distilbert-base-uncased-finetuned-sst-2-english')
 
 # 2. Basic Encoding and Decoding
 # ------------------------------
