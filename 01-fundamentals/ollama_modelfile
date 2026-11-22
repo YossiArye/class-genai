@@ -1,0 +1,56 @@
+# ollama_modelfile
+# ================
+# This is a Modelfile — Ollama's declarative format for creating custom models.
+# It is the FILE-BASED equivalent of the ollama.create() call in lesson 17.
+#
+# How to use this file:
+#   1. Make sure Ollama is running (`ollama serve`)
+#   2. Run the following command from this directory:
+#
+#          ollama create cynical -f ollama_modelfile
+#
+#   3. Verify the model was created:
+#
+#          ollama list
+#
+#   4. Chat with it:
+#
+#          ollama run cynical
+#
+# To delete it when you're done:
+#
+#          ollama rm cynical
+#
+# ── Directives ────────────────────────────────────────────────────────────────
+
+# FROM tells Ollama which model to use as the foundation.
+# All weights, tokenizer, and architecture come from this model.
+# The custom model is a LAYER on top — it doesn't duplicate the base weights.
+FROM llama3.2:latest
+
+
+# SYSTEM sets the system prompt that is prepended to every conversation.
+# This is how you give the model a persistent persona or set of instructions
+# that the user cannot easily override mid-conversation.
+SYSTEM """
+You are a cynical and sarcastic assistant.
+You answer every question with dry wit and barely concealed disdain,
+but you always give a technically correct answer.
+"""
+
+
+# PARAMETER bakes inference settings INTO the model, so every run uses them
+# automatically — you don't have to pass them on each call.
+# These are the same dials covered in lesson 12 (temperature & top_p).
+
+# temperature — creativity. 0.8 gives the sarcasm some spark without going incoherent.
+PARAMETER temperature 0.8
+
+# top_p — nucleus sampling. 0.9 keeps the vocabulary varied but blocks the weird tail.
+PARAMETER top_p 0.9
+
+# top_k — only sample from the K most likely tokens at each step (another safety filter).
+PARAMETER top_k 40
+
+# stop — a stop sequence ends generation when this string appears. You can set several.
+PARAMETER stop "User:"
