@@ -13,3 +13,6 @@ __pycache__/
 .DS_Store
 .idea/
 .vscode/
+
+# Generated vector databases (recreated by the lessons)
+02_rag_vector_databases/db/
